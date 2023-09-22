@@ -1,4 +1,7 @@
 from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import BSHTMLLoader
+from langchain.document_loaders import UnstructuredHTMLLoader
+
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -7,32 +10,45 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import streamlit as st
 from watsonxlangchain import LangChainInterface
 
+# Configuration
+selected_model = 'meta-llama/llama-2-70b-chat'
+
+# resource_name = 'null.html'
+resource_name = 'About Us - ProfitOptics.html'
+
+## End configuration
+
 creds = {
-    'apikey':'YOUR API KEY HERE', 
+    'apikey':'', 
     'url': 'https://us-south.ml.cloud.ibm.com'
 }
-llm = LangChainInterface(credentials=creds, model='meta-llama/llama-2-70b-chat', 
-params = {'decoding_method':'sample', 'max_new_tokens':200, 'temperature':0.5}, 
-project_id='YOUR PROJECT ID HERE')
 
+llm = LangChainInterface(
+    credentials=creds, 
+    model = selected_model, 
+    params = {'decoding_method':'sample', 'max_new_tokens':200, 'temperature':0.5}, 
+    project_id='ec74a523-e663-4c0a-aa89-6321b2022855')
+
+# jg ec74a523-e663-4c0a-aa89-6321b2022855
+# po 7b11331d-df80-4e60-ab84-f540be151b86
 
 @st.cache_resource
-def load_pdf(): 
-    pdf_name = 'what is generative ai.pdf'
-    loaders = [PyPDFLoader(pdf_name)]
+def load_external_resource(): 
+
+    loaders = [UnstructuredHTMLLoader(resource_name)]
 
     index = VectorstoreIndexCreator(
         embedding = HuggingFaceEmbeddings(model_name='all-MiniLM-L12-v2'), 
-        text_splitter=RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=0)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=0)
     ).from_loaders(loaders)
 
     return index
 
-index = load_pdf()
+index = load_external_resource()
 
 chain = RetrievalQA.from_chain_type(llm=llm, chain_type='stuff', retriever=index.vectorstore.as_retriever(), input_key='question')
 
-st.title('Ask Watsonx 🤖')
+st.title('Ask watsonx.ai 🤖')
 
 if 'messages' not in st.session_state: 
     st.session_state.messages = [] 
