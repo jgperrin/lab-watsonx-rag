@@ -18,6 +18,7 @@ selected_model = 'none'
 # selected_model = 'ibm/mpt-7b-instruct2'
 # selected_model = 'ibm/granite-13b-chat-v1'
 # selected_model = 'google/flan-t5-xxl'
+selected_model = 'ibm/granite-13b-instruct-v1'
 
 # Resources
 # resource_name = 'null.html'
@@ -30,7 +31,7 @@ more_resource_name = 'more.html'
 ## End configuration
 
 creds = {
-    'apikey':'lCFwWIPwg1XaSEftPkXY31B5E4pG-5rgE5SwFh0_htc7', 
+    'apikey':'', 
     'url': 'https://us-south.ml.cloud.ibm.com'
 }
 
