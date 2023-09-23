@@ -11,20 +11,31 @@ import streamlit as st
 from watsonxlangchain import LangChainInterface
 
 # Configuration
-selected_model = 'meta-llama/llama-2-70b-chat'
 
+# Model
+selected_model = 'none'
+# selected_model = 'meta-llama/llama-2-70b-chat'
+# selected_model = 'ibm/mpt-7b-instruct2'
+# selected_model = 'ibm/granite-13b-chat-v1'
+# selected_model = 'google/flan-t5-xxl'
+
+# Resources
 # resource_name = 'null.html'
 resource_name = 'About Us - ProfitOptics.html'
+
+# More resources
+# more_resource_name = 'null.html'
+more_resource_name = 'more.html'
 
 ## End configuration
 
 creds = {
-    'apikey':'', 
+    'apikey':'lCFwWIPwg1XaSEftPkXY31B5E4pG-5rgE5SwFh0_htc7', 
     'url': 'https://us-south.ml.cloud.ibm.com'
 }
 
 llm = LangChainInterface(
-    credentials=creds, 
+    credentials = creds, 
     model = selected_model, 
     params = {'decoding_method':'sample', 'max_new_tokens':200, 'temperature':0.5}, 
     project_id='ec74a523-e663-4c0a-aa89-6321b2022855')
@@ -35,7 +46,7 @@ llm = LangChainInterface(
 @st.cache_resource
 def load_external_resource(): 
 
-    loaders = [UnstructuredHTMLLoader(resource_name)]
+    loaders = [UnstructuredHTMLLoader(resource_name), UnstructuredHTMLLoader(more_resource_name)]
 
     index = VectorstoreIndexCreator(
         embedding = HuggingFaceEmbeddings(model_name='all-MiniLM-L12-v2'), 
